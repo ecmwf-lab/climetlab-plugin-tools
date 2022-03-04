@@ -1,12 +1,13 @@
 
 ## Install python plugin
 ```
-pip insrall climetlab-script-plugin-tools
+pip install climetlab-plugin-tools
 ```
 
 ## Use it
-
-climetlab create_plugin --dataset --name my-plugin-name
+```
+climetlab plugin_create_dataset
+```
 
 # Licence
 See LICENSE file.

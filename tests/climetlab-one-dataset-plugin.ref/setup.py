@@ -1,12 +1,10 @@
 #!/usr/bin/env python
-# (C) Copyright 2020 ECMWF.
-#
+# (C) Copyright 2022 European Centre for Medium-Range Weather Forecasts.
 # This software is licensed under the terms of the Apache Licence Version 2.0
 # which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
 # In applying this licence, ECMWF does not waive the privileges and immunities
 # granted to it by virtue of its status as an intergovernmental organisation
 # nor does it submit to any jurisdiction.
-#
 
 
 import io
@@ -20,32 +18,46 @@ def read(fname):
     return io.open(file_path, encoding="utf-8").read()
 
 
+package_name = "climetlab_one_dataset_plugin"  # noqa: E501
+
 version = None
-lines = read("climetlab_plugin_tools/version").split("\n")
+lines = read(f"{package_name}/version").split("\n")
 if lines:
     version = lines[0]
-
 
 assert version
 
 
+extras_require = {}
+
 setuptools.setup(
-    name="climetlab-plugin-tools",
+    name=package_name,
     version=version,
-    description="Example climetlab external dataset plugin",
+    description=(
+        "A dataset plugin for climetlab for the dataset "
+        "one-dataset-plugin"  # noqa: E501
+    ),
     long_description=read("README.md"),
-    author="European Centre for Medium-Range Weather Forecasts (ECMWF)",
-    author_email="software.support@ecmwf.int",
+    long_description_content_type="text/markdown",
+    author="Joe Developer",
+    author_email="joe.developer@example.com",
+    url="http://github.com/ecmwf-lab/climetlab-one-dataset-plugin",
     license="Apache License Version 2.0",
-    url="https://github.com/ecmwf/climetlab-plugin-tools",
     packages=setuptools.find_packages(),
     include_package_data=True,
     install_requires=["climetlab>=0.10.0"],
+    extras_require=extras_require,
     zip_safe=True,
     entry_points={
-        "climetlab.scripts": [
-            "plugin_script_plugin_tools_1 = climetlab_plugin_tools.create_plugin_cmd:CreateDatasetPluginCmd",
+        "climetlab.datasets": [
+            # End-users will use cml.load_dataset("one-dataset-plugin", ...)
+            # see the tests/ folder for a example.
+            "one-dataset-plugin= climetlab_one_dataset_plugin.main:Main",  # noqa: E501
+            # Other datasets can be included here
+            # "one-dataset-plugin-dataset-2= climetlab_one_dataset_plugin.main2:Main2",  # noqa: E501
         ]
+        # source plugins would be here
+        # "climetlab.sources": []
     },
     keywords="meteorology",
     classifiers=[

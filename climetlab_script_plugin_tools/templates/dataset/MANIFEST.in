@@ -1,9 +1,0 @@
-include LICENSE
-include README.md
-include climetlab_{{ cookiecutter.plugin_name|lower|replace("-", "_") }}/version
-
-recursive-include tests *
-recursive-exclude * __pycache__
-recursive-exclude * *.py[co]
-
-recursive-include docs *.rst conf.py makefile Makefile make.bat *.jpg *.png *.gif
