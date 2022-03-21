@@ -23,3 +23,10 @@ def get_version():
 
 
 __version__ = get_version()
+
+
+class CreateDatasetPluginStandAlone:
+    def __init__(self):
+        import subprocess
+
+        subprocess.run(["climetlab", "plugin_create_dataset"])

@@ -44,8 +44,11 @@ setuptools.setup(
     zip_safe=True,
     entry_points={
         "climetlab.scripts": [
-            "plugin_script_plugin_tools_1 = climetlab_plugin_tools.create_plugin_cmd:CreateDatasetPluginCmd",
-        ]
+            "climetlab_plugin_tools_1 = climetlab_plugin_tools.create_plugin_cmd:CreateDatasetPluginCmd",
+        ],
+        "console_scripts": [
+            "climetlab-plugin-create-dataset=climetlab_plugin_tools:CreateDatasetPluginStandAlone"
+        ],
     },
     keywords="meteorology",
     classifiers=[
