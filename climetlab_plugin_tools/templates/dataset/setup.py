@@ -29,8 +29,7 @@ setuptools.setup(
     name=package_name,
     version=version,
     description=(
-        "A dataset plugin for climetlab for the dataset "
-        "dataset-full-name-climetlab-template"  # noqa: E501
+        "A dataset plugin for climetlab for the dataset dataset-full-name-climetlab-template"  # noqa: E501
     ),
     long_description=read("README.md"),
     long_description_content_type="text/markdown",
