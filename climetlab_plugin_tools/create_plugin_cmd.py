@@ -102,6 +102,8 @@ class PluginContext:
             return "Joe Developer"
 
     def _gitconfig(self, key):
+        if os.environ.get("CLIMETLAB_PLUGIN_TOOLS_NO_GUESS"):
+            raise Exception("CLIMETLAB_PLUGIN_TOOLS_NO_GUESS is set.")
         config = configparser.ConfigParser()
         gitconfig = os.path.expanduser("~/.gitconfig")
         config.read(gitconfig)
@@ -163,7 +165,7 @@ class Transformer:
 
     def default_prompt(self):
         if self.default:
-            return f"\nHit 'return' to use the default value '{self.force_prefix}{self.default}'"
+            return f"Hit 'return' to use the default value '{self.force_prefix}{self.default}'"
         return ""
 
     def try_reading_from_context(self):
@@ -171,23 +173,25 @@ class Transformer:
             self.value = self._context.kwargs[self.key]
             assert isinstance(self.value, str)
             assert isinstance(self.force_prefix, str)
-            print(f"--> Using {self.force_prefix + self.value} (from command line)")
+            print(f"\n--> Using {self.force_prefix + self.value} (from command line)")
             return True
 
     def try_reading_from_user(self):
-        value = input("> " + self.force_prefix)
+        print()
+        value = input(">>>> " + self.force_prefix)
         if value == "h" or value == "?":
-            print(f"\n  {self.help}")
-            print(f"  Default value: {self.force_prefix + self.default}")
+            print(f"?\n  {self.help}")
+            if self.default is not None:
+                print(f"  Default value: {self.force_prefix}{self.default}")
             return self.try_reading_from_user()
         if value:
             self.value = value
-            print(f"--> Using {self.force_prefix + self.value}")
+            print(f"\n--> Using {self.force_prefix + self.value}")
             return True
 
     def try_reading_from_default(self):
         if self.default is not None:
-            print(f"--> Using {self.force_prefix + self.default} (default)")
+            print(f"\n--> Using {self.force_prefix + self.default} (default)")
             self.value = self.default
             return True
 

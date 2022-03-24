@@ -56,10 +56,7 @@ jobs:
         pip install pytest pytest-cov
         pip freeze
 
-    - run: cd tests && ./run_test_dataset_plugin.sh
-    - run: cd tests && ./run_test_one_dataset_plugin.sh
-    - run: cd tests && ./run_test_dataset_pytest.sh
-    - run: cd tests && ./run_test_one_dataset_pytest.sh
+    - run: cd tests/dataset && ./run_tests.sh
 
     - name: Check version
       if: ${{ github.event_name == 'release' }}

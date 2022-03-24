@@ -1,0 +1,142 @@
+Creating a dataset plugin
+
+Please enter the plugin name ('?' for help)
+Hit 'return' to use the default value 'my_plugin'
+
+>>>> ?
+  The plugin name is used to define:
+     - The python package name `import climetlab_{plugin_name} `
+     - The pip package name ` pip install climetlab-{plugin-name} `.
+  It will also be used to suggest and appropriate URL on github.
+  The plugin_name can be the name of the project you are working on,
+  but notice that it should be specific enough as only one plugin with
+  a given name can be installed. Highly generic names (such as "meteo",
+  "domain", "copernicus", "country-name" are not recommended.
+  The plugin name cannot be easily modified afterwards.
+  Default value: my_plugin
+
+>>>> 
+--> Using dataset-plugin
+
+Please enter the dataset name ('?' for help)
+
+
+>>>> dataset-plugin?
+  The dataset name is used as follow:
+  A climetlab dataset plugin package can provides one or more
+  datasets. This scripts creates a plugin with one dataset.
+  The dataset name will be used by the end users to access
+  the data through CliMetLab with:
+  cml.load_dataset("dataset-name", ...)
+  The convention is to make the dataset name start with
+  "dataset-plugin".
+  The dataset name can easily be modified afterwards, without
+  regenerating a new plugin, simply by editing the setup.py.
+  Default value: dataset-plugin
+
+>>>> dataset-plugin
+--> Using dataset-pluginrain-observations
+
+Please enter your full name ('?' for help)
+Hit 'return' to use the default value 'Joe Developer'
+
+>>>> ?
+  The full name is used in setup.py to define the maintainer of the pip package.
+  Default value: Joe Developer
+
+>>>> 
+--> Using Joe Developer
+
+Please enter your email ('?' for help)
+Hit 'return' to use the default value 'joe.developer@example.com'
+
+>>>> ?
+  The email is used in setup.py to define the email maintainer of the pip package.
+  Default value: joe.developer@example.com
+
+>>>> 
+--> Using joe.developer@example.com
+
+Please enter your Github user name ('?' for help)
+Hit 'return' to use the default value 'ecmwf-lab'
+
+>>>> ?
+  The github username (or github space name) is used
+  to suggest a github repository url.
+  The username (ecmwf-lab) should be used if you wish to host your
+  repository on the github space "https://github.com/ecmwf-lab/").
+  Else, please provide your own github user name.
+  Default value: ecmwf-lab
+
+>>>> 
+--> Using ecmwf-lab (default)
+
+Please enter the repository url ('?' for help)
+Hit 'return' to use the default value 'https://github.com/ecmwf-lab/climetlab-dataset-plugin'
+
+>>>> https://github.com/?
+  The repository url name is used to define:
+      - The package url in the setup.py, i.e. the url published in Pypi for pip.
+      - The links in the README file.
+  If your do not want to host you repository on github,
+  please edit manually the generated setup.py afterwards.
+  Default value: https://github.com/ecmwf-lab/climetlab-dataset-plugin
+
+>>>> https://github.com/
+--> Using https://github.com/ecmwf-lab/climetlab-dataset-plugin (default)
+
+Use the modified APACHE licence with ECMWF additions? ('y' or 'n', '?' for help)
+
+
+>>>> ?
+  The APACHE 2.0 licence is used for the plugin code.
+  Most users should answer "n" to use the standard APACHE 2.0 licence.
+  ECMWF users should answer "y" to add the appropriate addition to the licence.
+  The licence is added in the plugin code:
+      - In the header of each python file.
+      - In the LICENSE file.
+      - In the README.
+  If you choose another licence, please modify these files manually afterwards.
+
+>>>> 
+--> Using y
+   Using this licence:
+(C) Copyright 2022 European Centre for Medium-Range Weather Forecasts.
+This software is licensed under the terms of the Apache Licence Version 2.0
+which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+In applying this licence, ECMWF does not waive the privileges and immunities
+granted to it by virtue of its status as an intergovernmental organisation
+nor does it submit to any jurisdiction.
+
+Plugin built in climetlab-dataset-plugin
+
+--------------------------------------------------------------------
+Climetlab plugin generated successfully. Next steps:
+  1. Create a repository on github at http://github.com/ecmwf-lab/climetlab-dataset-plugin.
+
+  2. Push to the repository as instructed by github:
+    cd climetlab-dataset-plugin
+    git init
+    git add .
+    git commit -m'first commit'
+    git branch -M main
+    git remote add origin http://github.com/ecmwf-lab/climetlab-dataset-plugin
+    git push --set-upstream origin main
+
+  [Optional: See tests running http://github.com/ecmwf-lab/climetlab-dataset-plugin/actions]
+
+  3 - Publish to pipy (pip) manually:
+      python -m pip install --upgrade pip
+      pip install setuptools wheel twine
+      twine upload dist/*
+      # Need pipy login/password (create an account at https://pypi.org)
+
+  Others can now do `pip install climetlab-dataset-plugin`.
+
+  4. Publish automatically from Github to pypi. [Optional]
+     Edit climetlab-dataset-plugin/.github/workflows/check-and-publish to point to pypi instead of test.pypi.
+     Create a token from pypi at https://pypi.org/manage/account/token/
+     Add the token as a Gihtub secret on the name PYPI_API_TOKEN at https://github.com/ecmwf-lab/climetlab-dataset-plugin/settings/secrets/actions/new
+
+  You are all set! Push the github repository and release from http://github.com/ecmwf-lab/climetlab-dataset-plugin/releases/new.
+
