@@ -266,6 +266,15 @@ class GlobNoPromptTransformer(NoPromptTransformer):
     glob = True
 
 
+class SourceNameTransformer(GlobNoPromptTransformer):
+    def __init__(self, context):
+        super().__init__(
+            context,
+            "source_name",
+            value=context._transformers["plugin_name"].value,
+        )
+
+
 class DatasetNameTransformer(Transformer):
     desc = "the dataset name"
     _help = """The dataset name is used as follow:
@@ -443,7 +452,7 @@ TRANSFORMERS_CLASSES = {
     ],
     "source": [
         PluginNameTransformer,
-        DatasetNameTransformer,
+        SourceNameTransformer,
         FullNameTransformer,
         EmailTransformer,
         GithubUsernameTransformer,
