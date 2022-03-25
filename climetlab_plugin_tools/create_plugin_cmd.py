@@ -111,6 +111,40 @@ class PluginContext:
         LOG.info(f"Found {key} in gitconfig {value}")
         return value
 
+    def final_help(self):
+        txt = """
+--------------------------------------------------------------------
+Climetlab plugin generated successfully. Next steps:
+  1. Create a repository on github at http://github.com/repo_url_climetlab_template.
+
+  2. Push to the repository as instructed by github:
+    cd climetlab-plugin-name-climetlab-template
+    git init
+    git add .
+    git commit -m'first commit'
+    git branch -M main
+    git remote add origin http://github.com/repo_url_climetlab_template
+    git push --set-upstream origin main
+
+  [Optional: See tests running http://github.com/repo_url_climetlab_template/actions]
+
+  3 - Publish to pipy (pip) manually:
+      python -m pip install --upgrade pip
+      pip install setuptools wheel twine
+      twine upload dist/*
+      # Need pipy login/password (create an account at https://pypi.org)
+
+  Others can now do `pip install climetlab-plugin-name-climetlab-template`.
+
+  4. Publish automatically from Github to pypi. [Optional]
+     Edit climetlab-plugin-name-climetlab-template/.github/workflows/check-and-publish to point to pypi instead of test.pypi.
+     Create a token from pypi at https://pypi.org/manage/account/token/
+     Add the token as a Gihtub secret on the name PYPI_API_TOKEN at https://github.com/repo_url_climetlab_template/settings/secrets/actions/new
+
+  You are all set! Push the github repository and release from http://github.com/repo_url_climetlab_template/releases/new.
+"""  # noqa: E501
+        return self(txt)
+
 
 class Transformer:
     def __init__(
@@ -220,6 +254,10 @@ class Transformer:
         return txt
 
 
+class StandardTransformer(Transformer):
+    pass
+
+
 class NoPromptTransformer(Transformer):
     def read_value(self):
         LOG.debug(f"{self.key}: not prompt using {self.value}.")
@@ -290,37 +328,4 @@ class CreateDatasetPluginCmd:
         context = DatasetPluginContext(plugin_name=args.name, dataset_name=args.dataset)
         context.build_transformers()
         context.create_plugin()
-        txt = context(
-            """
---------------------------------------------------------------------
-Climetlab plugin generated successfully. Next steps:
-  1. Create a repository on github at http://github.com/repo_url_climetlab_template.
-
-  2. Push to the repository as instructed by github:
-    cd climetlab-plugin-name-climetlab-template
-    git init
-    git add .
-    git commit -m'first commit'
-    git branch -M main
-    git remote add origin http://github.com/repo_url_climetlab_template
-    git push --set-upstream origin main
-
-  [Optional: See tests running http://github.com/repo_url_climetlab_template/actions]
-
-  3 - Publish to pipy (pip) manually:
-      python -m pip install --upgrade pip
-      pip install setuptools wheel twine
-      twine upload dist/*
-      # Need pipy login/password (create an account at https://pypi.org)
-
-  Others can now do `pip install climetlab-plugin-name-climetlab-template`.
-
-  4. Publish automatically from Github to pypi. [Optional]
-     Edit climetlab-plugin-name-climetlab-template/.github/workflows/check-and-publish to point to pypi instead of test.pypi.
-     Create a token from pypi at https://pypi.org/manage/account/token/
-     Add the token as a Gihtub secret on the name PYPI_API_TOKEN at https://github.com/repo_url_climetlab_template/settings/secrets/actions/new
-
-  You are all set! Push the github repository and release from http://github.com/repo_url_climetlab_template/releases/new.
-"""  # noqa: E501
-        )
-        print(txt)
+        print(context.final_help())

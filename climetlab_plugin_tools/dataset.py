@@ -13,7 +13,7 @@ from .create_plugin_cmd import (
     DatasetNameTransformer,
     LicenceTransformer,
     PluginContext,
-    Transformer,
+    StandardTransformer,
 )
 
 LOG = logging.getLogger(__name__)
@@ -23,7 +23,7 @@ class DatasetPluginContext(PluginContext):
     kind = "dataset"
 
     def build_transformers(self):
-        Transformer(
+        StandardTransformer(
             self,
             "plugin_name",
             desc="the plugin name",
@@ -31,7 +31,7 @@ class DatasetPluginContext(PluginContext):
             glob=True,
             help="""The plugin name is used to define:
      - The python package name `import climetlab_{plugin_name} `
-     - The pip package name ` pip install climetlab-{plugin-name} `.
+     - The pip package name `pip install climetlab-{plugin-name}`.
   It will also be used to suggest and appropriate URL on github.
   The plugin_name can be the name of the project you are working on,
   but notice that it should be specific enough as only one plugin with
@@ -59,21 +59,21 @@ class DatasetPluginContext(PluginContext):
   regenerating a new plugin, simply by editing the setup.py.""",
         )
 
-        Transformer(
+        StandardTransformer(
             self,
             "full_name",
             desc="your full name",
             default=self.get_default_full_name(),
             help="""The full name is used in setup.py to define the maintainer of the pip package.""",
         )
-        Transformer(
+        StandardTransformer(
             self,
             "email",
             desc="your email",
             default=self.get_default_email(),
             help="""The email is used in setup.py to define the email maintainer of the pip package.""",
         )
-        Transformer(
+        StandardTransformer(
             self,
             "github_username",
             desc="your Github user name",
@@ -84,7 +84,7 @@ class DatasetPluginContext(PluginContext):
   repository on the github space "https://github.com/ecmwf-lab/").
   Else, please provide your own github user name.""",
         )
-        Transformer(
+        StandardTransformer(
             self,
             "repo_url",
             desc="the repository url",
