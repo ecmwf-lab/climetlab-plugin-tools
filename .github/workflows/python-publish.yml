@@ -57,6 +57,7 @@ jobs:
         pip freeze
 
     - run: cd tests/dataset && ./run_tests.sh
+    - run: cd tests/source && ./run_tests.sh
 
     - name: Check version
       if: ${{ github.event_name == 'release' }}
