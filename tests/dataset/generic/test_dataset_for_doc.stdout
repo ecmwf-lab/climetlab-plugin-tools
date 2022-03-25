@@ -6,7 +6,7 @@ Hit 'return' to use the default value 'my_plugin'
 >>>> ?
   The plugin name is used to define:
      - The python package name `import climetlab_{plugin_name} `
-     - The pip package name ` pip install climetlab-{plugin-name} `.
+     - The pip package name `pip install climetlab-{plugin-name}`.
   It will also be used to suggest and appropriate URL on github.
   The plugin_name can be the name of the project you are working on,
   but notice that it should be specific enough as only one plugin with

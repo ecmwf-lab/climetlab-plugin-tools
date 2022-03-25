@@ -30,3 +30,10 @@ class CreateDatasetPluginStandAlone:
         import subprocess
 
         subprocess.run(["climetlab", "plugin_create_dataset"])
+
+
+class CreateSourcePluginStandAlone:
+    def __init__(self):
+        import subprocess
+
+        subprocess.run(["climetlab", "plugin_create_source"])

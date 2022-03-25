@@ -34,10 +34,14 @@ nor does it submit to any jurisdiction."""
 
 
 class PluginContext:
-    def __init__(self, **kwargs):
+    def __init__(self, kind, **kwargs):
+        self.kind = kind
         self._transformers = {}
         self.kwargs = kwargs
-        LOG.debug(f"PluginContext initialized with kwargs={kwargs}")
+
+    def fill_form(self):
+        for t in TRANSFORMERS_CLASSES[self.kind]:
+            t(self)
 
     @property
     def template_dir(self):
@@ -68,6 +72,7 @@ class PluginContext:
             with open(output, "w") as f:
                 f.write(txt)
         print(f"Plugin built in {self.output_dir}")
+        print(self.final_help())
 
     def template_files_list(self):
         cwd = os.getcwd()
@@ -147,6 +152,8 @@ Climetlab plugin generated successfully. Next steps:
 
 
 class Transformer:
+    _help = ""
+
     def __init__(
         self,
         context,
@@ -157,7 +164,6 @@ class Transformer:
         value=None,
         glob=None,
         force_prefix="",
-        help="",
     ):
         LOG.debug(f"New Transformer({key})")
 
@@ -169,7 +175,7 @@ class Transformer:
         self.force_prefix = self._context(force_prefix)
         self.pattern = pattern
         self.value = value
-        self.help = self._context(help)
+        self.help = self._context(self._help)
         self.glob = glob
 
         self.fill()
@@ -254,16 +260,33 @@ class Transformer:
         return txt
 
 
-class StandardTransformer(Transformer):
-    pass
-
-
 class NoPromptTransformer(Transformer):
     def read_value(self):
         LOG.debug(f"{self.key}: not prompt using {self.value}.")
 
 
 class DatasetNameTransformer(Transformer):
+    _help = """The dataset name is used as follow:
+  A climetlab dataset plugin package can provides one or more
+  datasets. This scripts creates a plugin with one dataset.
+  The dataset name will be used by the end users to access
+  the data through CliMetLab with:
+  cml.load_dataset("dataset-name", ...)
+  The convention is to make the dataset name start with
+  "plugin-name-climetlab-template".
+  The dataset name can easily be modified afterwards, without
+  regenerating a new plugin, simply by editing the setup.py."""
+
+    def __init__(self, context):
+        super().__init__(
+            context,
+            "dataset_name",
+            desc="the dataset name",
+            default="",
+            glob=True,
+            force_prefix="plugin-name-climetlab-template",
+        )
+
     def fill(self):
         super().fill()
         self.value = dashes(self.value).lower()
@@ -279,7 +302,99 @@ class DatasetNameTransformer(Transformer):
         NoPromptTransformer(self._context, "dataset_full_name", value=name, glob=True)
 
 
+class PluginNameTransformer(Transformer):
+    _help = """The plugin name is used to define:
+     - The python package name `import climetlab_{plugin_name} `
+     - The pip package name `pip install climetlab-{plugin-name}`.
+  It will also be used to suggest and appropriate URL on github.
+  The plugin_name can be the name of the project you are working on,
+  but notice that it should be specific enough as only one plugin with
+  a given name can be installed. Highly generic names (such as "meteo",
+  "domain", "copernicus", "country-name" are not recommended.
+  The plugin name cannot be easily modified afterwards."""
+
+    def __init__(self, context):
+        super().__init__(
+            context,
+            "plugin_name",
+            desc="the plugin name",
+            default="my_plugin",
+            glob=True,
+        )
+        context.check_output_dir()
+
+
+class EmailTransformer(Transformer):
+    _help = """The email is used in setup.py to define the email maintainer of the pip package."""
+
+    def __init__(self, context):
+        super().__init__(
+            context,
+            "email",
+            desc="your email",
+            default=context.get_default_email(),
+        )
+
+
+class GithubUsernameTransformer(Transformer):
+    _help = """The github username (or github space name) is used
+  to suggest a github repository url.
+  The username (ecmwf-lab) should be used if you wish to host your
+  repository on the github space "https://github.com/ecmwf-lab/").
+  Else, please provide your own github user name."""
+
+    def __init__(self, context):
+        super().__init__(
+            context,
+            "github_username",
+            desc="your Github user name",
+            default="ecmwf-lab",
+        )
+
+
+class FullNameTransformer(Transformer):
+    _help = """The full name is used in setup.py to define the maintainer of the pip package."""
+
+    def __init__(self, context):
+        super().__init__(
+            context,
+            "full_name",
+            desc="your full name",
+            default=context.get_default_full_name(),
+        )
+
+
+class RepoUrlTransformer(Transformer):
+    _help = """The repository url name is used to define:
+      - The package url in the setup.py, i.e. the url published in Pypi for pip.
+      - The links in the README file.
+  If your do not want to host you repository on github,
+  please edit manually the generated setup.py afterwards."""
+
+    def __init__(self, context):
+        super().__init__(
+            context,
+            "repo_url",
+            desc="the repository url",
+            default="github_username_climetlab_template/climetlab-plugin-name-climetlab-template",
+            force_prefix="https://github.com/",
+        )
+
+
 class LicenceTransformer(Transformer):
+    _help = """The APACHE 2.0 licence is used for the plugin code.
+  Most users should answer "n" to use the standard APACHE 2.0 licence.
+  ECMWF users should answer "y" to add the appropriate addition to the licence.
+  The licence is added in the plugin code:
+      - In the header of each python file.
+      - In the LICENSE file.
+      - In the README.
+  If you choose another licence, please modify these files manually afterwards."""
+
+    def __init__(self, context):
+        desc = "Use the modified APACHE licence with ECMWF additions?"
+        super().__init__(context, "licence", desc=desc)
+
     def prompt(self):
         return f"{self.desc} ('y' or 'n', '?' for help)"
 
@@ -315,17 +430,44 @@ class LicenceTransformer(Transformer):
         )
 
 
+TRANSFORMERS_CLASSES = {
+    "dataset": [
+        PluginNameTransformer,
+        DatasetNameTransformer,
+        FullNameTransformer,
+        EmailTransformer,
+        GithubUsernameTransformer,
+        RepoUrlTransformer,
+        LicenceTransformer,
+    ],
+    "source": [
+        PluginNameTransformer,
+        DatasetNameTransformer,
+        FullNameTransformer,
+        EmailTransformer,
+        GithubUsernameTransformer,
+        RepoUrlTransformer,
+        LicenceTransformer,
+    ],
+}
+
+
 class CreateDatasetPluginCmd:
     @parse_args(
         name=dict(help="Plugin name"),
         dataset=dict(help="Dataset name"),
     )
     def do_plugin_create_dataset(self, args):
-        """Plugin context utilities."""
-        from .dataset import DatasetPluginContext
-
-        print("Creating a dataset plugin")
-        context = DatasetPluginContext(plugin_name=args.name, dataset_name=args.dataset)
-        context.build_transformers()
+        context = PluginContext(
+            "dataset", plugin_name=args.name, dataset_name=args.dataset
+        )
+        context.fill_form()
         context.create_plugin()
-        print(context.final_help())
+
+
+class CreateSourcePluginCmd:
+    @parse_args(name=dict(help="Plugin name"))
+    def do_plugin_create_source(self, args):
+        context = PluginContext("source", plugin_name=args.name)
+        context.fill_form()
+        context.create_plugin()
