@@ -268,11 +268,10 @@ class GlobNoPromptTransformer(NoPromptTransformer):
 
 class SourceNameTransformer(GlobNoPromptTransformer):
     def __init__(self, context):
-        super().__init__(
-            context,
-            "source_name",
-            value=context._transformers["plugin_name"].value,
-        )
+        name = context._transformers["plugin_name"].value
+        if name.endswith("-source"):
+            name = name[:-7]
+        super().__init__(context, "source_name", value=name)
 
 
 class DatasetNameTransformer(Transformer):
@@ -322,7 +321,8 @@ class PluginNameTransformer(Transformer):
   but notice that it should be specific enough as only one plugin with
   a given name can be installed. Highly generic names (such as "meteo",
   "domain", "copernicus", "country-name" are not recommended.
-  The plugin name cannot be easily modified afterwards."""
+  The plugin name cannot be easily modified afterwards.
+  You would need to regenerate a new one and copy existing code."""
     glob = True
 
     def __init__(self, context):
