@@ -1,4 +1,4 @@
-## climetlab-plugin_name_climetlab_template
+## climetlab-plugin-name-climetlab-template
 
 A source plugin for climetlab for the source source-name-climetlab-template.
 
