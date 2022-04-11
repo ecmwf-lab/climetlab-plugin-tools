@@ -1,4 +1,4 @@
-## climetlab-plugin_name_climetlab_template
+## climetlab-plugin-name-climetlab-template
 
 A dataset plugin for climetlab for the dataset plugin-name-climetlab-template-dataset-name-climetlab-template.
 
