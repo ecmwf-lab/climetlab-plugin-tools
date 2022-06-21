@@ -144,7 +144,7 @@ Climetlab plugin generated successfully. Next steps:
   4. Publish automatically from Github to pypi. [Optional]
      Edit climetlab-plugin-name-climetlab-template/.github/workflows/check-and-publish to point to pypi instead of test.pypi.
      Create a token from pypi at https://pypi.org/manage/account/token/
-     Add the token as a Gihtub secret on the name PYPI_API_TOKEN at https://github.com/repo_url_climetlab_template/settings/secrets/actions/new
+     Add the token as a Github secret on the name PYPI_API_TOKEN at https://github.com/repo_url_climetlab_template/settings/secrets/actions/new
 
   You are all set! Push the github repository and release from http://github.com/repo_url_climetlab_template/releases/new.
 """  # noqa: E501
